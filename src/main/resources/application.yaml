@@ -23,12 +23,18 @@ spring:
       # Relative path form current dir
       #    url: jdbc:h2:./db/voting
       # Relative path from home
-      #    url: jdbc:h2:~/voting
+    #    url: jdbc:h2:~/voting
     #    tcp: jdbc:h2:tcp://localhost:9092/~/voting
     username: sa
     password:
   h2.console.enabled: true
   data.rest:
-      #  https://docs.spring.io/spring-data/rest/docs/current/reference/html/#getting-started.basic-settings
-      basePath: /api
-      returnBodyOnCreate: true
+    #  https://docs.spring.io/spring-data/rest/docs/current/reference/html/#getting-started.basic-settings
+    basePath: /api
+    returnBodyOnCreate: true
+    #  jackson:
+    # Jackson Serialization Issue Resolver
+#    visibility.field: any
+#    visibility.getter: none
+#    visibility.setter: none
+#    visibility.is-getter: none
