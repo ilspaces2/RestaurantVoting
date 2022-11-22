@@ -39,7 +39,6 @@ public class User extends BaseEntity implements Serializable {
     private String lastName;
 
     @Column(name = "password")
-    @NotEmpty
     @Size(max = 128)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
