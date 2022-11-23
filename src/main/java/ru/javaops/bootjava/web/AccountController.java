@@ -1,6 +1,11 @@
 package ru.javaops.bootjava.web;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.rest.webmvc.RepositoryLinksResource;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.RepresentationModelProcessor;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +22,21 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Set;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 @RestController
-@RequestMapping("api/account")
+@RequestMapping("/api/account")
 @Slf4j
-public class AccountController {
+public class AccountController implements RepresentationModelProcessor<RepositoryLinksResource> {
+
+    @SuppressWarnings("unchecked")
+    private static final RepresentationModelAssemblerSupport<User, EntityModel<User>> ASSEMBLER =
+            new RepresentationModelAssemblerSupport<>(AccountController.class, (Class<EntityModel<User>>) (Class<?>) EntityModel.class) {
+                @Override
+                public EntityModel<User> toModel(User user) {
+                    return EntityModel.of(user, linkTo(AccountController.class).withSelfRel());
+                }
+            };
 
     private final UserRepository userRepository;
 
@@ -28,21 +44,21 @@ public class AccountController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public User User(@AuthenticationPrincipal AuthUser user) {
-        return user.getUser();
+    @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    public EntityModel<User> user(@AuthenticationPrincipal AuthUser user) {
+        return ASSEMBLER.toModel(user.getUser());
     }
 
-    @DeleteMapping
+    @DeleteMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         log.info("Delete {}", authUser.getUser());
         userRepository.deleteById(authUser.id());
     }
 
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", consumes = MediaTypes.HAL_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
+    public ResponseEntity<EntityModel<User>> register(@Valid @RequestBody User user) {
         log.info("Register {}", user);
         ValidationUtil.checkNew(user);
         user.setRoles(Set.of(Role.USER));
@@ -50,7 +66,7 @@ public class AccountController {
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/account")
                 .build().toUri();
-        return ResponseEntity.created(uri).body(user);
+        return ResponseEntity.created(uri).body(ASSEMBLER.toModel(user));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -64,5 +80,11 @@ public class AccountController {
             user.setPassword(oldUser.getPassword());
         }
         userRepository.save(user);
+    }
+
+    @Override
+    public RepositoryLinksResource process(RepositoryLinksResource model) {
+        model.add(linkTo(AccountController.class).withRel("account"));
+        return model;
     }
 }
