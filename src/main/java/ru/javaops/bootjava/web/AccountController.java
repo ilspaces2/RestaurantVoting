@@ -1,5 +1,6 @@
 package ru.javaops.bootjava.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryLinksResource;
 import org.springframework.hateoas.EntityModel;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Tag(name = "Account Controller", description = "The Account API")
 @RestController
 @RequestMapping("/api/account")
 @Slf4j
