@@ -3,7 +3,7 @@ spring:
   jpa:
     show-sql: true
     open-in-view: false
-    defer-datasource-initialization: true
+    #    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     properties:
@@ -20,7 +20,7 @@ spring:
       #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
       # Absolute path
       #    url: jdbc:h2:C:/projects/bootjava/restorant-voting/db/voting
-      #    tcp: jdbc:h2:tcp://localhost:9092/C:/projects/bootjava/restorant-voting/db/voting
+    #    tcp: jdbc:h2:tcp://localhost:9092/C:/projects/bootjava/restorant-voting/db/voting
     # Relative path form current dir
     #    url: jdbc:h2:./db/voting
     # Relative path from home
@@ -39,16 +39,16 @@ spring:
       # Jackson Serialization Issue Resolver
       #  jackson:
       #    visibility.field: any
-      #    visibility.getter: none
+    #    visibility.getter: none
     #    visibility.setter: none
     #    visibility.is-getter: none
 
-  #  https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#security-properties
-  security:
-    user:
-      name: user
-      password: password
-      roles: USER
+#  https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#security-properties
+#  security:
+#    user:
+#      name: user
+#      password: password
+#      roles: USER
 
 logging:
   level:

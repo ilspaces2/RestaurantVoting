@@ -23,7 +23,7 @@ public class AppConfig {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2Server() throws SQLException {
-        log.info("Start H2 TCP server");
+        log.info("Start H2 TCP server for connect to memory database : jdbc:h2:tcp://localhost:9092/mem:voting");
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
     }
 }
