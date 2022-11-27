@@ -51,6 +51,15 @@ public class User extends BaseEntity implements Serializable {
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
     private Set<Role> roles;
 
+    public User(Integer id, String email, String firstName, String lastName, String password, Set<Role> roles) {
+        super(id);
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public void setEmail(String email) {
         this.email = StringUtils.hasText(email) ? email.toLowerCase() : null;
     }

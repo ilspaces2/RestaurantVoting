@@ -8,7 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javaops.bootjava.AbstractControllerTest;
+import ru.javaops.bootjava.UserTestUtil;
+import ru.javaops.bootjava.model.User;
 import ru.javaops.bootjava.repository.UserRepository;
+import ru.javaops.bootjava.util.JsonUtil;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,7 +32,8 @@ public class AccountControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(URL))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON_VALUE));
+                .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonMatcher(user, UserTestUtil::assertEquals));
     }
 
     @Test
@@ -49,20 +53,28 @@ public class AccountControllerTest extends AbstractControllerTest {
 
     @Test
     void register() throws Exception {
-        perform(MockMvcRequestBuilders.post(URL + REGISTER)
+        User newUser = newUser();
+        User registered = asUser(perform(MockMvcRequestBuilders.post(URL + REGISTER)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newUser())))
+                .content(JsonUtil.writeValue(newUser)))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print()).andReturn());
+        int newId = registered.id();
+        newUser.setId(newId);
+        UserTestUtil.assertEquals(registered, newUser);
+        UserTestUtil.assertEquals(registered, userRepository.findById(newId).orElseThrow());
+
     }
 
     @Test
     @WithUserDetails(value = USER_EMAIL)
     void update() throws Exception {
+        User updateUser = updateUser();
         perform(MockMvcRequestBuilders.put(URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateUser())))
+                .content(JsonUtil.writeValue(updateUser)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+        UserTestUtil.assertEquals(updateUser, userRepository.findById(USER_ID).orElseThrow());
     }
 }
