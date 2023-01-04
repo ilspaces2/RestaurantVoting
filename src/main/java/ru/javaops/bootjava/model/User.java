@@ -8,7 +8,7 @@ import ru.javaops.bootjava.util.JsonDeserializers;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
@@ -17,24 +17,23 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor()
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = "password")
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements Serializable {
 
     @Column(name = "email", nullable = false, unique = true)
-    @NotEmpty
+    @NotBlank
     @Email
     @Size(max = 128)
     private String email;
 
     @Column(name = "first_name")
-    @NotEmpty
+    @NotBlank
     @Size(max = 128)
     private String firstName;
 
     @Column(name = "last_name")
-    @NotEmpty
+    @NotBlank
     @Size(max = 128)
     private String lastName;
 
@@ -47,8 +46,9 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
+    @CollectionTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_role")})
     private Set<Role> roles;
 
     public User(Integer id, String email, String firstName, String lastName, String password, Set<Role> roles) {
@@ -62,5 +62,10 @@ public class User extends BaseEntity implements Serializable {
 
     public void setEmail(String email) {
         this.email = StringUtils.hasText(email) ? email.toLowerCase() : null;
+    }
+
+    @Override
+    public String toString() {
+        return "User:" + id + '[' + email + ']';
     }
 }

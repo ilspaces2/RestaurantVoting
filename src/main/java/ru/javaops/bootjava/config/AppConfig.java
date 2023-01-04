@@ -29,6 +29,7 @@ public class AppConfig {
     Веб консоль можно так поднять или как у нас в проперти
     сделано spring.database.h2.console.enabled=true
     http://localhost:8082/h2-console
+    @Profile("!test")
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2WebServer() throws SQLException {
         return Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");

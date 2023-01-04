@@ -1,6 +1,8 @@
-package ru.javaops.bootjava.util;
+package ru.javaops.bootjava.util.validation;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 import ru.javaops.bootjava.error.IllegalRequestDataException;
 import ru.javaops.bootjava.model.BaseEntity;
 
@@ -19,5 +21,12 @@ public class ValidationUtil {
         } else if (entity.id() != id) {
             throw new IllegalRequestDataException(entity.getClass().getSimpleName() + " must has id=" + id);
         }
+    }
+
+    //  https://stackoverflow.com/a/65442410/548473
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
     }
 }

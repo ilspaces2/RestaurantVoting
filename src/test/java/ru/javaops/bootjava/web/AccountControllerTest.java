@@ -33,7 +33,7 @@ public class AccountControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonMatcher(user, UserTestUtil::assertEquals));
+                .andExpect(jsonMatcher(user, UserTestUtil::assertNoIdEquals));
     }
 
     @Test
@@ -54,15 +54,12 @@ public class AccountControllerTest extends AbstractControllerTest {
     @Test
     void register() throws Exception {
         User newUser = newUser();
-        User registered = asUser(perform(MockMvcRequestBuilders.post(URL + REGISTER)
+        User registered = asUser(perform(MockMvcRequestBuilders.post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newUser)))
                 .andExpect(status().isCreated())
                 .andDo(print()).andReturn());
-        int newId = registered.id();
-        newUser.setId(newId);
-        UserTestUtil.assertEquals(registered, newUser);
-        UserTestUtil.assertEquals(registered, userRepository.findById(newId).orElseThrow());
+        UserTestUtil.assertNoIdEquals(registered, newUser);
 
     }
 

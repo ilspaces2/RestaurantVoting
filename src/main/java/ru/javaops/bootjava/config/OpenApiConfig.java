@@ -20,7 +20,12 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "REST API documentation",
                 version = "1.0.0",
-                description = "Spring Boot 2.х, Spring Data Rest/HATEOAS application",
+                description = """
+                        Приложение по <a href='https://javaops.ru/view/bootjava'>курсу BootJava</a>
+                        <p><b>Тестовые креденшелы:</b><br>
+                        - user@gmail.com / password<br>
+                        - admin@javaops.ru / admin</p>
+                        """,
                 contact = @Contact(url = "http://localhost:8080/api", name = "IlyaM", email = "admin@admin.ru")),
         security = @SecurityRequirement(name = "basicAuth")
 )
