@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating {}", email);
-            Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
+            Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email.toLowerCase());
             return new AuthUser(optionalUser.orElseThrow(
                     () -> new UsernameNotFoundException(String.format("User '%s' was not found", email))));
         };
@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/account").hasRole(Role.USER.name())
                 .antMatchers("/api/**").hasRole(Role.ADMIN.name())
                 .and().httpBasic()
+                .and().logout()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
     }

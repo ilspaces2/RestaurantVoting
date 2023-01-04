@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.javaops.bootjava.util.JsonUtil;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 @Configuration
 @Slf4j
 @AllArgsConstructor
+@EnableCaching
 public class AppConfig {
 
     private final ObjectMapper objectMapper;
