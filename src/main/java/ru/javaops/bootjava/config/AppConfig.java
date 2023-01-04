@@ -41,4 +41,10 @@ public class AppConfig {
         log.info("Start H2 TCP server for connect to memory database : jdbc:h2:tcp://localhost:9092/mem:voting");
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
     }
+
+    //    https://stackoverflow.com/a/46947975/548473
+    @Bean
+    Module module() {
+        return new Hibernate5Module();
+    }
 }
