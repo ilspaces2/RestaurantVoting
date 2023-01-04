@@ -11,7 +11,9 @@ import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.to.UserTo;
 import ru.javaops.bootjava.util.JsonUtil;
 import ru.javaops.bootjava.util.UserUtil;
-import ru.javaops.bootjava.web.AbstractControllerTest;
+import ru.javaops.bootjava.AbstractControllerTest;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -63,7 +65,7 @@ class ProfileControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
+        USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);
     }
 
     @Test
@@ -75,7 +77,7 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userRepository.getById(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
+        USER_MATCHER.assertMatch(userRepository.getExisted(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
     }
 
     @Test
